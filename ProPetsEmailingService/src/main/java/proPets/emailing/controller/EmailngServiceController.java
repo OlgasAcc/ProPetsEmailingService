@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import proPets.emailing.dto.EmailNewPostAuthorDto;
 import proPets.emailing.service.EmailService;
 
 //@CrossOrigin(origins = "http://localhost:3000")
@@ -20,9 +21,9 @@ public class EmailngServiceController {
 
 	
 	@PutMapping ("/new")
-	public void convertPost(@RequestParam ("postId") String postId, @RequestParam ("flag") String flag, @RequestBody String authorEmail) throws Exception {
+	public void convertPost(@RequestParam ("postId") String postId, @RequestParam ("flag") String flag, @RequestBody EmailNewPostAuthorDto emailDto) throws Exception {
 		System.out.println("im in email service");
-		emailService.sendMessageToNewPostAuthor(postId, flag, authorEmail);
+		emailService.sendMessageToNewPostAuthor(postId, flag, emailDto.getEmail());
 	}
 	
 }
