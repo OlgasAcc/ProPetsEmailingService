@@ -39,7 +39,7 @@ public class EmailServiceImpl implements EmailService {
 		// +"?postId=" + postId + "&flag=" + flag;
 
 		String url = "http://localhost:8081/" + flag + "/v1/" + "all_matched" + "?postId=" + postId + "&flag=" + flag;
-		String text = "<html>Hi! Using our searching algorythm we've tried to find matches to your post. Hope it would be helpful to you. But if the list is empty - don't be upsed and try tommorow. We'll notify you about every matched updates. <br>Click this link and check it now:<br><br>";
+		String text = "<html>Hi!<br>Using our searching algorythm we've tried to find matches to your post. Hope it would be helpful to you. But if the list is empty - don't be upsed and try tommorow. We'll notify you about every matched updates. <br>Click this link and check it now:<br><br>";
 
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -66,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
 		// +"?postId=" + postId + "&flag=" + flag;
 
 		String url = "http://localhost:8081/" + flag + "/v1/" + "new_matched" + "?postId=" + postId + "&flag=" + flag;
-		String text = "<html>Hi! Just now we've got some new post that would be matched to you. Hope it would be helpful to you. But if not - don't be upset, try to search manually with our site's filters. We'll notify you about every matched updates.<br>Click this link and check it now:<br><br>";
+		String text = "<html>Hi!<br>Just now we've got some new post that would be matched to you. Hope it would be helpful to you. But if not - don't be upset, try to search manually with our site's filters. We'll notify you about every matched updates.<br>Click this link and check it now:<br><br>";
 
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
