@@ -1,14 +1,17 @@
 package proPets.emailing.service;
 
-import java.io.File;
+import java.io.IOException;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -28,13 +31,24 @@ public class EmailServiceImpl implements EmailService {
 	// w/o attachment
 	@Async
 	@Override
-	public void sendMessageToNewPostAuthor(String postId, String flag, String to) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		String text = buildTextForNewPostAuthor (postId, flag);
-		message.setFrom("proPets.manager@gmail.com");
-		message.setTo(to);
+	public void sendMessageToNewPostAuthor(String postId, String flag, String to)
+			throws MessagingException, IOException {
+		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
+		// (фронт) на сайте для запроса на поиск и отрисовку постов
+		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
+		// +"?postId=" + postId + "&flag=" + flag;
+
+		String url = "http://localhost:8081/" + flag + "/v1/" + "all_matched" + "?postId=" + postId + "&flag=" + flag;
+		String text = "<html>Hi! Using our searching algorythm we've tried to find matches to your post. Hope it would be helpful to you. But if the list is empty - don't be upsed and try tommorow. We'll notify you about every matched updates. <br>Click this link and check it now:<br><br>";
+
+		MimeMessage message = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		helper.setFrom("proPets.manager@gmail.com");
+		helper.setTo(to);
 		message.setSubject("Current searching results for your post");
-		message.setText(text);
+
+		message = addAttachmentToMessage(message, url, text);
+
 		try {
 			emailSender.send(message);
 		} catch (MailException m) {
@@ -42,60 +56,60 @@ public class EmailServiceImpl implements EmailService {
 		}
 	}
 
-	// w/o attachment
 	@Async
 	@Override
-	public void sendMessageToMatchingPostsAuthors(String postId, String flag, String[] to) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		String text = buildTextForMatchedPostAuthor(postId, flag);
-		message.setFrom("proPets.manager@gmail.com");
+	public void sendMessageToMatchingPostsAuthors(String postId, String flag, String[] to)
+			throws MessagingException, IOException {
+		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
+		// (фронт) на сайте для запроса на поиск и отрисовку постов
+		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
+		// +"?postId=" + postId + "&flag=" + flag;
+
+		String url = "http://localhost:8081/" + flag + "/v1/" + "new_matched" + "?postId=" + postId + "&flag=" + flag;
+		String text = "<html>Hi! Just now we've got some new post that would be matched to you. Hope it would be helpful to you. But if not - don't be upset, try to search manually with our site's filters. We'll notify you about every matched updates.<br>Click this link and check it now:<br><br>";
+
+		MimeMessage message = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		helper.setFrom("proPets.manager@gmail.com");
 		message.setSubject("New matched post");
-		message.setText(text);
+
+		message = addAttachmentToMessage(message, url, text);
+
 		for (int i = 0; i < to.length; i++) {
-			message.setTo(to[i]);
+			helper.setTo(to[i]);
 			emailSender.send(message);
 		}
 	}
-	
 
-	private String buildTextForNewPostAuthor(String postId, String flag) {
-		//String url = "https://propets..../" + flag + "/v1/" + "all_matched" + "?postId=" + postId + "&flag=" + flag;
-		String url = "http://localhost:8081/" + flag + "/v1/" + "all_matched" + "?postId=" + postId + "&flag=" + flag;
-		String text = "Hi! Using our searching algorythm we've tried to find matches for your post. Hope it would be helpful to you. But if the list is empty - don't be upsed and try tommorow. We'll notify you about every matched updates. Click this link and check it now: "
-				+ System.lineSeparator() + url + System.lineSeparator() + "Let every lost friend will be found"
-				+ System.lineSeparator() + "Best regards, ProPets team";
-		return text;
-	}
-	
-	private String buildTextForMatchedPostAuthor(String postId, String flag) {
-		//String url = "https://propets..../" + flag + "/v1/" + "new_matched" + "?postId=" + postId + "&flag=" + flag;
-		String url = "http://localhost:8081/" + flag + "/v1/" + "new_matched" + "?postId=" + postId + "&flag=" + flag;
-		String text = "Hi! Just now we've got some new post that would be matched for you. Hope it would be helpful to you. But if not - don't be upsed, try to search manually with our site's filters. We'll notify you about every matched updates. Click this link and check it now: "
-				+ System.lineSeparator() + url + System.lineSeparator() + "Let every lost friend will be found"
-				+ System.lineSeparator() + "Best regards, ProPets team";
-		return text;
-	}
-	
-	
+	private MimeMessage addAttachmentToMessage(MimeMessage message, String url, String text)
+			throws MessagingException, IOException {
 
-	// with attachment
-	@Override
-	public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment)
-			throws MessagingException {
+		StringBuffer body = new StringBuffer(text);
+		body.append(url);
+		body.append("<br><br><br>");
 
-		MimeMessage message = emailSender.createMimeMessage();
+		// adding signature:
+		body.append("<img src=\"cid:image\" width=\"30%\" height=\"30%\" /><br>");
+		body.append("Let every losted friend will be found!<br>");
+		body.append("Best regards, <br>ProPets team.<br>");
+		body.append("propets.co.il");
+		body.append("</html>");
 
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		MimeBodyPart messageBodyPart = new MimeBodyPart();
+		messageBodyPart.setContent(body.toString(), "text/html");
 
-		helper.setFrom("proPets.manager@gmail.com");
-		helper.setTo(to);
-		helper.setSubject(subject);
-		helper.setText(text);
+		MimeBodyPart imageBodyPart = new MimeBodyPart();
+		imageBodyPart = new MimeBodyPart();
+		DataSource fds = new FileDataSource("E:\\Programming\\PROJECT\\logo.jpeg");
+		imageBodyPart.setDataHandler(new DataHandler(fds));
+		imageBodyPart.setHeader("Content-ID", "<image>");
+		imageBodyPart.setDisposition(MimeBodyPart.INLINE);
 
-		FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
-		helper.addAttachment("Invoice", file);
+		MimeMultipart content = new MimeMultipart();
+		content.addBodyPart(messageBodyPart);
+		content.addBodyPart(imageBodyPart);
+		message.setContent(content);
 
-		emailSender.send(message);
-
+		return message;
 	}
 }
