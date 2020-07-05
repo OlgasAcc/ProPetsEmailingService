@@ -35,6 +35,8 @@ public class EmailServiceImpl implements EmailService {
 			throws MessagingException, IOException {
 		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
 		// (фронт) на сайте для запроса на поиск и отрисовку постов
+		// добавить в ссылку одноразовый код, параллельно отправить его в базу ЛФ для сохранения (синхр)
+		
 		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
 		// +"?postId=" + postId + "&flag=" + flag;
 
@@ -62,6 +64,8 @@ public class EmailServiceImpl implements EmailService {
 			throws MessagingException, IOException {
 		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
 		// (фронт) на сайте для запроса на поиск и отрисовку постов
+		// добавить в ссылку одноразовый код, параллельно отправить его в базу ЛФ для сохранения (синхр)
+		
 		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
 		// +"?postId=" + postId + "&flag=" + flag;
 
@@ -74,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
 		message.setSubject("New matched post");
 
 		message = addAttachmentToMessage(message, url, text);
-
+System.out.println(to);
 		for (int i = 0; i < to.length; i++) {
 			helper.setTo(to[i]);
 			emailSender.send(message);
