@@ -11,35 +11,36 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import proPets.emailing.configuration.EmailingConfiguration;
 
 @Service
+@EnableBinding({DataExchange.class, DataExchange2.class})
 public class EmailServiceImpl implements EmailService {
 
 	@Autowired
-	EmailingConfiguration converterConfiguration;
+	EmailingConfiguration emailingConfiguration;
 
 	@Autowired
 	private JavaMailSender emailSender;
+	
+	@Autowired
+	EmailingDataExchangeService dataExchangeService;
 
-	// w/o attachment
-	@Async
+
 	@Override
-	public void sendMessageToNewPostAuthor(String postId, String flag, String to)
-			throws MessagingException, IOException {
-		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
-		// (фронт) на сайте для запроса на поиск и отрисовку постов
-		// добавить в ссылку одноразовый код, параллельно отправить его в базу ЛФ для сохранения (синхр)
+	public void sendMessageToNewPostAuthor (String postId, String flag, String to) throws MessagingException, IOException {
 		
-		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
-		// +"?postId=" + postId + "&flag=" + flag;
-
+		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
+				// (фронт) на сайте для запроса на поиск и отрисовку постов
+				// добавить в ссылку одноразовый код, параллельно отправить его в базу ЛФ для сохранения (синхр)
+				
+		// String url = "https://propets..../"
 		String url = "http://localhost:8081/" + flag + "/v1/" + "all_matched" + "?postId=" + postId + "&flag=" + flag;
 		String text = "<html>Hi!<br>Using our searching algorythm we've tried to find matches to your post. Hope it would be helpful to you. But if the list is empty - don't be upsed and try tommorow. We'll notify you about every matched updates. <br>Click this link and check it now:<br><br>";
 
@@ -56,18 +57,21 @@ public class EmailServiceImpl implements EmailService {
 		} catch (MailException m) {
 			m.printStackTrace();
 		}
+		
 	}
 
-	@Async
+
 	@Override
-	public void sendMessageToMatchingPostsAuthors(String postId, String flag, String[] to)
-			throws MessagingException, IOException {
+	public void sendMessageToMatchingPostsAuthors(String postId, String flag, String [] to) throws MessagingException, IOException {
+
+		if (to.length == 0 || to == null) {
+			return;
+		}
 		// !!! здесь будет линк не на сервер напрямую, а на соответствующую страницу
 		// (фронт) на сайте для запроса на поиск и отрисовку постов
 		// добавить в ссылку одноразовый код, параллельно отправить его в базу ЛФ для сохранения (синхр)
 		
-		// String url = "https://propets..../" + flag + "/v1/" + "all_matched"
-		// +"?postId=" + postId + "&flag=" + flag;
+		// String url = "https://propets..../"
 
 		String url = "http://localhost:8081/" + flag + "/v1/" + "new_matched" + "?postId=" + postId + "&flag=" + flag;
 		String text = "<html>Hi!<br>Just now we've got some new post that would be matched to you. Hope it would be helpful to you. But if not - don't be upset, try to search manually with our site's filters. We'll notify you about every matched updates.<br>Click this link and check it now:<br><br>";
@@ -78,11 +82,12 @@ public class EmailServiceImpl implements EmailService {
 		message.setSubject("New matched post");
 
 		message = addAttachmentToMessage(message, url, text);
-System.out.println(to);
+		System.out.println(to);
 		for (int i = 0; i < to.length; i++) {
 			helper.setTo(to[i]);
 			emailSender.send(message);
 		}
+		
 	}
 
 	private MimeMessage addAttachmentToMessage(MimeMessage message, String url, String text)
@@ -94,9 +99,10 @@ System.out.println(to);
 
 		// adding signature:
 		body.append("<img src=\"cid:image\" width=\"30%\" height=\"30%\" /><br>");
-		body.append("Let every losted friend will be found!<br>");
+		body.append("Let every lost friend will be found!<br><br>");
 		body.append("Best regards, <br>ProPets team.<br>");
-		body.append("propets.co.il");
+		body.append("www.propets.co.il");
+		body.append("<a href=\"https://propets.co.il/unsubscribe\">Unsubscribe</a><br>");
 		body.append("</html>");
 
 		MimeBodyPart messageBodyPart = new MimeBodyPart();

@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 @ManagedResource
 public class EmailingConfiguration {
@@ -14,6 +16,11 @@ public class EmailingConfiguration {
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
 	
 	//@Value("${imagga.url}")

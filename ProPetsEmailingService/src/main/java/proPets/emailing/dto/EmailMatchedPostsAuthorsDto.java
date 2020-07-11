@@ -11,5 +11,7 @@ import lombok.Setter;
 @Setter
 
 public class EmailMatchedPostsAuthorsDto {
+	String postId;
+	String flag;
 	String [] emails;
 }

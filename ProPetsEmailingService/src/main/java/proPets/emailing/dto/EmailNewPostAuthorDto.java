@@ -11,5 +11,7 @@ import lombok.Setter;
 @Setter
 
 public class EmailNewPostAuthorDto {
+	String postId;
+	String flag;
 	String email;
 }
