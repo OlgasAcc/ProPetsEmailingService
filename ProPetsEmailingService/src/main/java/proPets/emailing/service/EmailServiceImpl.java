@@ -32,7 +32,6 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	EmailingDataExchangeService dataExchangeService;
 
-
 	@Override
 	public void sendMessageToNewPostAuthor (String postId, String flag, String to) throws MessagingException, IOException {
 		
@@ -56,8 +55,7 @@ public class EmailServiceImpl implements EmailService {
 			emailSender.send(message);
 		} catch (MailException m) {
 			m.printStackTrace();
-		}
-		
+		}		
 	}
 
 
@@ -101,8 +99,8 @@ public class EmailServiceImpl implements EmailService {
 		body.append("<img src=\"cid:image\" width=\"30%\" height=\"30%\" /><br>");
 		body.append("Let every lost friend will be found!<br><br>");
 		body.append("Best regards, <br>ProPets team.<br>");
-		body.append("www.propets.co.il");
-		body.append("<a href=\"https://propets.co.il/unsubscribe\">Unsubscribe</a><br>");
+		body.append("www.propets.co.il<br><br>");
+		body.append("<a href=\"https:\\/\\/propets.co.il\\/unsubscribe\">Unsubscribe</a><br>");
 		body.append("</html>");
 
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
