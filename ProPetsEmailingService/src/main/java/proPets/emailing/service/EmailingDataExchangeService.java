@@ -15,20 +15,20 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;
 import proPets.emailing.dto.EmailMatchedPostsAuthorsDto;
 import proPets.emailing.dto.EmailNewPostAuthorDto;
-import proPets.emailing.exceptions.PostNotFoundException;
 
 @Service
 @Slf4j
 public class EmailingDataExchangeService {
-	
+
 	@Autowired
 	DataExchange dataExchange;
-	
+
 	@Autowired
 	EmailService emailService;
 
 	@StreamListener(DataExchange2.ALL_MATCHED)
-	public void handleNewPostAuthorData(@Payload EmailNewPostAuthorDto toNewPostAuthor) throws JsonMappingException, JsonProcessingException, PostNotFoundException {
+	public void handleNewPostAuthorData(@Payload EmailNewPostAuthorDto toNewPostAuthor)
+			throws JsonMappingException, JsonProcessingException {
 		log.info("Received postMQDto: {}", toNewPostAuthor);
 		String postId = toNewPostAuthor.getPostId();
 		String flag = toNewPostAuthor.getFlag();
@@ -39,9 +39,10 @@ public class EmailingDataExchangeService {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@StreamListener(DataExchange.NEW_MATCHED)
-	public void handleAllMatchedPostsAuthorData(@Payload EmailMatchedPostsAuthorsDto toAllMatchedPostsAuthors) throws JsonMappingException, JsonProcessingException, PostNotFoundException {
+	public void handleAllMatchedPostsAuthorData(@Payload EmailMatchedPostsAuthorsDto toAllMatchedPostsAuthors)
+			throws JsonMappingException, JsonProcessingException {
 		log.info("Received postMQDto: {}", toAllMatchedPostsAuthors);
 		String postId = toAllMatchedPostsAuthors.getPostId();
 		String flag = toAllMatchedPostsAuthors.getFlag();
@@ -52,5 +53,5 @@ public class EmailingDataExchangeService {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
