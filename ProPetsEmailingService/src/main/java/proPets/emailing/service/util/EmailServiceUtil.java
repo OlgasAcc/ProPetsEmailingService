@@ -1,7 +1,6 @@
 package proPets.emailing.service.util;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -72,8 +70,8 @@ public class EmailServiceUtil {
 	public ResponseEntity<String> saveAccessCodeInLostFoundServiceDB (String accessCode) {
 		RestTemplate restTemplate = emailingConfiguration.restTemplate();
 
-		//String url = "https://propets-.../security/v1/post";
-		String url = "http://localhost:8081/lost/v1/accessCode"; //to LF service
+		//String url = "https://propets-.../lostFound/lost/v1/accessCode";
+		String url = "http://localhost:8081/lostFound/lost/v1/accessCode"; //to LF service
 		try {
 			HttpHeaders newHeaders = new HttpHeaders();
 			newHeaders.add("Content-Type", "application/json");

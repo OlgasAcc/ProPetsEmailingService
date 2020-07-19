@@ -1,17 +1,16 @@
 package proPets.emailing.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@ManagedResource
+@RefreshScope
 public class EmailingConfiguration {
-
-	//Map<String, EmailDto> posts = new ConcurrentHashMap<>();
 	
 	@Bean
 	public RestTemplate restTemplate() {
@@ -23,12 +22,21 @@ public class EmailingConfiguration {
 		return new ObjectMapper();
 	}
 	
-	//@Value("${imagga.url}")
-	//String url;
+	@Value("${host.email}")
+	String hostEmail;
 	
-	//public String getUrl() {
-	//	return url;
-	//}
+	@RefreshScope
+	public String getHostEmail() {
+		return hostEmail;
+	}
+	
+	@Value("${base.url}")
+	String baseUrl;
+	
+	@RefreshScope
+	public String getBaseUrl() {
+		return baseUrl;
+	}
 	
 
 }
