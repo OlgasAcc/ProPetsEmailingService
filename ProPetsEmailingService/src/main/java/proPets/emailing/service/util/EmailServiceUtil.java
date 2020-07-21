@@ -41,7 +41,7 @@ public class EmailServiceUtil {
 		body.append("Let every lost friend will be found!<br><br>");
 		body.append("Best regards, <br>ProPets team.<br>");
 		body.append("www.propets.co.il<br><br>");
-		body.append("<a href=\"https:\\/\\/propets.co.il\\/unsubscribe\\/{to}\">Unsubscribe</a><br>");
+		body.append("<a href=\"https://propets.co.il/unsubscribe/${to}\">Unsubscribe</a><br>");
 		body.append("</html>");
 
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -70,8 +70,7 @@ public class EmailServiceUtil {
 	public ResponseEntity<String> saveAccessCodeInLostFoundServiceDB (String accessCode) {
 		RestTemplate restTemplate = emailingConfiguration.restTemplate();
 
-		//String url = "https://propets-.../lostFound/lost/v1/accessCode";
-		String url = "http://localhost:8081/lostFound/lost/v1/accessCode"; //to LF service
+		String url = emailingConfiguration.getAccessCodeBaseUrl() + "lostFound/lost/v1/accessCode"; //to LF service
 		try {
 			HttpHeaders newHeaders = new HttpHeaders();
 			newHeaders.add("Content-Type", "application/json");

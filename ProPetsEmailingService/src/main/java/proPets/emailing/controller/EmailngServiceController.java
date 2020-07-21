@@ -24,8 +24,9 @@ public class EmailngServiceController {
 
 	@RefreshScope
 	@GetMapping("/config")
-	public  BeanConfiguration getRefreshedData() {
-		return new BeanConfiguration(emailingConfiguration.getHostEmail(),emailingConfiguration.getBaseUrl());
+	public BeanConfiguration getRefreshedData() {
+		return new BeanConfiguration(emailingConfiguration.getHostEmail(), emailingConfiguration.getBaseUrl(),
+				emailingConfiguration.getAccessCodeBaseUrl());
 	}
-	
+
 }

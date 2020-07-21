@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
 
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		helper.setFrom("proPets.manager@gmail.com");
+		helper.setFrom(emailingConfiguration.getHostEmail());
 		helper.setTo(to);
 		message.setSubject("Current searching results for your post!");
 

@@ -38,5 +38,12 @@ public class EmailingConfiguration {
 		return baseUrl;
 	}
 	
+	@Value("${accessCode.lostFound.base.url}")
+	String accessCodeBaseUrl;
+	
+	@RefreshScope
+	public String getAccessCodeBaseUrl() {
+		return accessCodeBaseUrl;
+	}
 
 }
