@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Configuration
 @RefreshScope
 public class EmailingConfiguration {
@@ -17,9 +15,17 @@ public class EmailingConfiguration {
 		return new RestTemplate();
 	}
 	
-	@Bean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
+//	@Bean
+//	public ObjectMapper objectMapper() {
+//		return new ObjectMapper();
+//	}
+	
+	@Value("${current.version}")
+	String version;
+	
+	@RefreshScope
+	public String getVersion() {
+		return version;
 	}
 	
 	@Value("${host.email}")
@@ -44,6 +50,22 @@ public class EmailingConfiguration {
 	@RefreshScope
 	public String getAccessCodeBaseUrl() {
 		return accessCodeBaseUrl;
+	}
+	
+	@Value("${text.newPostAuthor}")
+	String textToNewPostAuthor;
+	
+	@RefreshScope
+	public String getTextToNewPostAuthor() {
+		return textToNewPostAuthor;
+	}
+	
+	@Value("${text.matchedPostAuthor}")
+	String textToMatchedPostAuthor;
+	
+	@RefreshScope
+	public String getTextToMatchedPostAuthor() {
+		return textToMatchedPostAuthor;
 	}
 
 }

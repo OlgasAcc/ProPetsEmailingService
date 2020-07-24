@@ -26,7 +26,8 @@ public class EmailngServiceController {
 	@GetMapping("/config")
 	public BeanConfiguration getRefreshedData() {
 		return new BeanConfiguration(emailingConfiguration.getHostEmail(), emailingConfiguration.getBaseUrl(),
-				emailingConfiguration.getAccessCodeBaseUrl());
+				emailingConfiguration.getAccessCodeBaseUrl(), emailingConfiguration.getVersion(),
+				emailingConfiguration.getTextToMatchedPostAuthor(), emailingConfiguration.getTextToNewPostAuthor());
 	}
 
 }
